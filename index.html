@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CONSTRUCONTROL – SISTEMA INDUSTRIAL v2.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700&family=Nunito+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --brand:    #1a3a6e;
+  --brand-mid:#1e4a9e;
+  --brand-lt: #2563cc;
+  --accent:   #e85d26;
+  --accent-lt:#f07a40;
+  --green:    #2eaa6e;
+  --green-lt: #38c47f;
+  --white:    #ffffff;
+  --gray-50:  #f8f9fb;
+  --gray-100: #eef0f4;
+  --gray-200: #dde1ea;
+  --gray-400: #9da5b8;
+  --gray-600: #5a6480;
+  --gray-800: #2b3352;
+  --shadow-card: 0 8px 40px rgba(26,58,110,.13), 0 2px 8px rgba(0,0,0,.07);
+  --radius-card: 18px;
+  --radius-key:  10px;
+}
+
+html,body{height:100%;font-family:'Nunito Sans',sans-serif;background:#1a3a6e;overflow:hidden}
+
+/* ── BACKGROUND ───────────────────────────── */
+.bg{
+  position:fixed;inset:0;z-index:0;
+  background:
+    linear-gradient(135deg,rgba(26,58,110,.85) 0%,rgba(30,74,158,.4) 40%,rgba(10,30,70,.2) 100%),
+    url('https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=1600&q=80&auto=format&fit=crop') center/cover no-repeat;
+}
+
+/* subtle texture overlay */
+.bg::after{
+  content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(0deg,rgba(255,255,255,.015) 0,rgba(255,255,255,.015) 1px,transparent 1px,transparent 60px),
+             repeating-linear-gradient(90deg,rgba(255,255,255,.015) 0,rgba(255,255,255,.015) 1px,transparent 1px,transparent 60px);
+}
+
+/* ── LAYOUT ──────────────────────────────── */
+.page{position:relative;z-index:2;height:100vh;display:flex;align-items:center;padding:0 5vw}
+
+/* ── LOGO top-right ───────────────────────── */
+.top-brand{
+  position:fixed;top:26px;right:36px;z-index:10;
+  display:flex;align-items:center;gap:10px;
+}
+.top-brand-icon{
+  width:36px;height:36px;background:var(--brand-lt);border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+}
+.top-brand-icon svg{width:20px;height:20px}
+.top-brand-name{
+  font-family:'Nunito',sans-serif;font-weight:800;font-size:20px;color:#fff;
+  letter-spacing:.5px;
+}
+
+/* ── CARD ────────────────────────────────── */
+.card{
+  background:var(--white);
+  border-radius:var(--radius-card);
+  box-shadow:var(--shadow-card);
+  width:360px;min-width:320px;
+  overflow:hidden;
+  animation:cardIn .5s cubic-bezier(.22,1,.36,1) both;
+}
+@keyframes cardIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+.card-body{padding:28px 28px 0}
+.card-foot{padding:14px 0;background:var(--brand);text-align:center}
+.card-foot a{
+  color:rgba(255,255,255,.85);font-size:12.5px;font-weight:500;
+  text-decoration:none;margin:0 10px;letter-spacing:.3px;
+  transition:color .15s;
+}
+.card-foot a:hover{color:#fff}
+.card-foot span{color:rgba(255,255,255,.3);font-size:11px}
+
+/* Card header */
+.card-header{
+  display:flex;flex-direction:column;gap:3px;
+  margin-bottom:20px;
+}
+.card-logo{
+  display:flex;align-items:center;gap:9px;margin-bottom:6px;
+}
+.card-logo-icon{
+  width:40px;height:40px;background:var(--brand);border-radius:9px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.card-logo-icon svg{width:22px;height:22px}
+.card-logo-text{
+  font-family:'Nunito',sans-serif;font-weight:800;font-size:17px;
+  color:var(--brand);line-height:1.1;letter-spacing:.3px;
+}
+.card-logo-sub{font-size:10px;font-weight:600;color:var(--gray-400);letter-spacing:1.5px;text-transform:uppercase}
+.card-title{font-size:14.5px;font-weight:600;color:var(--gray-800)}
+.card-desc{font-size:12px;color:var(--gray-400);font-weight:400}
+
+/* ── FIELDS ──────────────────────────────── */
+.field{margin-bottom:12px}
+.field-row{
+  display:flex;align-items:center;
+  border-bottom:1.5px solid var(--gray-200);
+  padding:6px 0 8px;gap:6px;
+  transition:border-color .2s;
+}
+.field-row:focus-within{border-color:var(--brand-lt)}
+.field-row.error-field{border-color:#e55;}
+
+.doc-select{
+  font-family:'Nunito Sans',sans-serif;font-size:13px;font-weight:600;
+  color:var(--gray-800);background:none;border:none;outline:none;cursor:pointer;
+  padding:0 4px 0 0;appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%239da5b8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 0 center;padding-right:16px;
+}
+.field-divider{width:1px;height:16px;background:var(--gray-200);flex-shrink:0}
+
+.field-input{
+  flex:1;border:none;outline:none;background:none;
+  font-family:'Nunito Sans',sans-serif;font-size:13.5px;color:var(--gray-800);
+  letter-spacing:.3px;
+}
+.field-input::placeholder{color:var(--gray-400);font-weight:400}
+
+.field-eye{
+  background:none;border:none;cursor:pointer;color:var(--gray-400);
+  padding:2px;display:flex;align-items:center;transition:color .15s;
+}
+.field-eye:hover{color:var(--gray-600)}
+.field-eye svg{width:18px;height:18px}
+
+/* ── ERROR MSG ───────────────────────────── */
+.err-msg{
+  display:none;align-items:center;gap:6px;
+  background:#fff2f2;border:1px solid #fccaca;
+  border-radius:7px;padding:8px 10px;margin-bottom:10px;
+  font-size:12px;color:#c0392b;animation:fadeIn .2s ease both;
+}
+.err-msg.show{display:flex}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+.err-msg svg{width:14px;height:14px;flex-shrink:0}
+
+/* ── VIRTUAL KEYBOARD ────────────────────── */
+.keyboard{margin:10px 0 8px}
+.kb-row{display:flex;gap:5px;margin-bottom:5px;justify-content:center}
+.kb-key{
+  flex:1;height:36px;max-width:38px;
+  background:var(--white);border:1.5px solid var(--gray-200);
+  border-radius:var(--radius-key);
+  font-family:'Nunito Sans',sans-serif;font-size:13px;font-weight:600;color:var(--gray-800);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:background .1s,border-color .1s,transform .08s;
+  user-select:none;
+}
+.kb-key:hover{background:var(--gray-50);border-color:var(--gray-400)}
+.kb-key:active{transform:scale(.93);background:var(--gray-100)}
+.kb-key.wide{max-width:52px;font-size:11px;gap:3px}
+.kb-key.wider{max-width:70px}
+.kb-key.del{color:var(--gray-600)}
+
+/* ── REMEMBER ─────────────────────────────  */
+.remember{display:flex;align-items:center;gap:8px;margin:4px 0 16px;cursor:pointer}
+.remember input[type=checkbox]{
+  width:16px;height:16px;accent-color:var(--green);cursor:pointer;
+}
+.remember span{font-size:12.5px;color:var(--gray-600);font-weight:500}
+
+/* ── BTN ─────────────────────────────────── */
+.btn-next{
+  width:100%;padding:13px;border:none;border-radius:10px;cursor:pointer;
+  background:var(--green);color:#fff;
+  font-family:'Nunito',sans-serif;font-size:15px;font-weight:700;letter-spacing:.4px;
+  transition:background .2s,transform .15s,box-shadow .2s;
+  box-shadow:0 4px 18px rgba(46,170,110,.3);
+  margin-bottom:20px;
+}
+.btn-next:hover{background:var(--green-lt);box-shadow:0 6px 24px rgba(46,170,110,.4);transform:translateY(-1px)}
+.btn-next:active{transform:translateY(0)}
+
+/* ── LOADING SCREEN ──────────────────────── */
+.loading{
+  position:fixed;inset:0;z-index:9999;
+  background:var(--brand);
+  display:none;flex-direction:column;align-items:center;justify-content:center;
+  gap:16px;
+}
+.loading.active{display:flex;animation:fadeIn .3s ease both}
+
+.loader-circle{
+  position:relative;width:72px;height:72px;
+  background:rgba(255,255,255,.08);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:6px;
+}
+
+/* animated arc */
+.loader-arc{
+  position:absolute;inset:-3px;
+  border-radius:50%;
+  border:3px solid transparent;
+  border-top-color:var(--accent);
+  border-right-color:rgba(232,93,38,.3);
+  animation:spin .9s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* brand chevron inside */
+.loader-inner svg{width:32px;height:32px}
+
+.loader-text{
+  font-family:'Nunito',sans-serif;font-weight:600;font-size:14px;
+  color:rgba(255,255,255,.7);text-align:center;line-height:1.5;
+}
+</style>
+</head>
+<body>
+
+<!-- BG -->
+<div class="bg"></div>
+
+<!-- TOP BRAND -->
+<div class="top-brand">
+  <div class="top-brand-icon">
+    <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="2" y="2" width="7" height="7" rx="1.5" fill="white"/>
+      <rect x="11" y="2" width="7" height="7" rx="1.5" fill="rgba(255,255,255,.55)"/>
+      <rect x="2" y="11" width="7" height="7" rx="1.5" fill="rgba(255,255,255,.55)"/>
+      <rect x="11" y="11" width="7" height="7" rx="1.5" fill="rgba(255,255,255,.2)" stroke="rgba(255,255,255,.4)" stroke-width="1"/>
+    </svg>
+  </div>
+  <span class="top-brand-name">CONSTRUCONTROL</span>
+</div>
+
+<!-- LOADING -->
+<div class="loading" id="loading">
+  <div class="loader-circle">
+    <div class="loader-arc"></div>
+    <div class="loader-inner">
+      <!-- CC chevron mark -->
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" rx="16" fill="rgba(255,255,255,.1)"/>
+        <path d="M11 10l6 6-6 6" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M17 10l6 6-6 6" stroke="rgba(232,93,38,.4)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+  </div>
+  <div class="loader-text" id="loaderText">Espere un momento<br>por favor</div>
+</div>
+
+<!-- PAGE -->
+<div class="page">
+  <div class="card">
+    <div class="card-body">
+
+      <!-- Header -->
+      <div class="card-header">
+        <div class="card-logo">
+          <div class="card-logo-icon">
+            <svg viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="2" y="2" width="8" height="8" rx="1.5" fill="white"/>
+              <rect x="12" y="2" width="8" height="8" rx="1.5" fill="rgba(255,255,255,.55)"/>
+              <rect x="2" y="12" width="8" height="8" rx="1.5" fill="rgba(255,255,255,.55)"/>
+              <rect x="12" y="12" width="8" height="8" rx="1.5" fill="rgba(255,255,255,.2)" stroke="rgba(255,255,255,.5)" stroke-width="1"/>
+            </svg>
+          </div>
+          <div>
+            <div class="card-logo-text">CONSTRUCONTROL</div>
+            <div class="card-logo-sub">Sistema Industrial v2.0</div>
+          </div>
+        </div>
+        <div class="card-title">Bienvenido</div>
+        <div class="card-desc">Ingresa tus credenciales para continuar</div>
+      </div>
+
+      <!-- Error -->
+      <div class="err-msg" id="errMsg">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8">
+          <circle cx="8" cy="8" r="6"/>
+          <path d="M8 5v3M8 10v.5" stroke-linecap="round"/>
+        </svg>
+        <span id="errText">Credenciales incorrectas.</span>
+      </div>
+
+      <!-- DOC field -->
+      <div class="field">
+        <div class="field-row" id="rowDoc">
+          <select class="doc-select" id="docType">
+            <option>DNI</option>
+            <option>CE</option>
+          </select>
+          <div class="field-divider"></div>
+          <input class="field-input" id="docNum" placeholder="Número de documento" maxlength="11" inputmode="numeric">
+        </div>
+      </div>
+
+      <!-- PASS field -->
+      <div class="field">
+        <div class="field-row" id="rowPass">
+          <input class="field-input" id="passField" type="password" placeholder="Contraseña" readonly>
+          <button class="field-eye" id="eyeBtn" type="button" aria-label="Mostrar contraseña">
+            <svg id="eyeSvg" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6">
+              <path d="M1 9s3-6 8-6 8 6 8 6-3 6-8 6-8-6-8-6z"/>
+              <circle cx="9" cy="9" r="2.5"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Virtual keyboard -->
+      <div class="keyboard" id="keyboard"></div>
+
+      <!-- Remember -->
+      <label class="remember">
+        <input type="checkbox" id="rememberDoc">
+        <span>Recordar documento</span>
+      </label>
+
+      <!-- Button -->
+      <button class="btn-next" id="btnNext" type="button">Siguiente</button>
+
+    </div><!-- /card-body -->
+
+    <div class="card-foot">
+      <a href="#">Olvidé mi contraseña</a>
+      <span>|</span>
+      <a href="#">Ayuda</a>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ── USERS ── */
+const USERS = {
+  'admin':     {pass:'admin123', role:'Administrador'},
+  'supervisor':{pass:'super2025',role:'Supervisor'},
+  'ingeniero': {pass:'ing2025#', role:'Ingeniero'},
+  '12345678':  {pass:'obras2025',role:'Operador'},
+  '87654321':  {pass:'constr#1', role:'Gerente'},
+};
+
+/* ── VIRTUAL KEYBOARD ── */
+const nums    = ['8','9','7','5','2','4','3','1','0','6'];
+const letters = 'qwertyuiopasdfghjklzxcvbnm'.split('');
+
+// shuffle array
+function shuffle(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+
+let pw = '';
+let showPw = false;
+
+function buildKeyboard(){
+  const kb = document.getElementById('keyboard');
+  kb.innerHTML='';
+
+  const sNums = shuffle(nums);
+  const sLets = shuffle(letters);
+
+  // Row 1: 10 digits
+  const r1=row(); sNums.forEach(k=>r1.appendChild(key(k)));
+  kb.appendChild(r1);
+
+  // Row 2: q-p (10)
+  const r2=row(); sLets.slice(0,10).forEach(k=>r2.appendChild(key(k)));
+  kb.appendChild(r2);
+
+  // Row 3: shift + a-l (8)
+  const r3=row();
+  r3.appendChild(wideKey('⇧','shift','wide'));
+  sLets.slice(10,18).forEach(k=>r3.appendChild(key(k)));
+  kb.appendChild(r3);
+
+  // Row 4: #+=  z-m  del
+  const r4=row();
+  r4.appendChild(wideKey('#+= ','sym','wide'));
+  sLets.slice(18,26).forEach(k=>r4.appendChild(key(k)));
+  const del=wideKey('⌫','del','wide del');
+  r4.appendChild(del);
+  kb.appendChild(r4);
+}
+
+function row(){const d=document.createElement('div');d.className='kb-row';return d;}
+
+function key(char){
+  const b=document.createElement('button');
+  b.className='kb-key';b.textContent=char;b.type='button';
+  b.addEventListener('click',()=>pressKey(char));
+  return b;
+}
+
+function wideKey(label,val,cls){
+  const b=document.createElement('button');
+  b.className='kb-key '+cls;b.textContent=label;b.type='button';
+  b.addEventListener('click',()=>{
+    if(val==='del'){pw=pw.slice(0,-1);updatePassDisplay();}
+    else if(val==='shift'){buildKeyboard();}
+  });
+  return b;
+}
+
+function pressKey(char){
+  pw+=char;
+  updatePassDisplay();
+}
+
+function updatePassDisplay(){
+  const input=document.getElementById('passField');
+  input.value=showPw? pw : '•'.repeat(pw.length);
+  clearErr();
+}
+
+/* ── EYE TOGGLE ── */
+document.getElementById('eyeBtn').addEventListener('click',()=>{
+  showPw=!showPw;
+  const svg=document.getElementById('eyeSvg');
+  if(showPw){
+    svg.innerHTML=`<path d="M2 2l14 14M7 7a3 3 0 004 4M4.5 4.6C2.7 6 1 9 1 9s3 6 8 6c1.5 0 2.9-.4 4-.9"/><path d="M11.5 4A8 8 0 0117 9s-.8 1.6-2.1 3"/>`;
+  } else {
+    svg.innerHTML=`<path d="M1 9s3-6 8-6 8 6 8 6-3 6-8 6-8-6-8-6z"/><circle cx="9" cy="9" r="2.5"/>`;
+  }
+  updatePassDisplay();
+});
+
+/* ── ERRORS ── */
+function showErr(msg){
+  const box=document.getElementById('errMsg');
+  document.getElementById('errText').textContent=msg;
+  box.classList.add('show');
+  document.getElementById('rowDoc').classList.add('error-field');
+  document.getElementById('rowPass').classList.add('error-field');
+}
+function clearErr(){
+  document.getElementById('errMsg').classList.remove('show');
+  document.getElementById('rowDoc').classList.remove('error-field');
+  document.getElementById('rowPass').classList.remove('error-field');
+}
+
+document.getElementById('docNum').addEventListener('input',clearErr);
+
+/* ── LOADING ── */
+const LOAD_MSGS=[
+  'Verificando credenciales...',
+  'Cargando módulos del sistema...',
+  'Preparando su entorno...',
+  'Espere un momento\npor favor'
+];
+
+function runLoading(cb){
+  const ld=document.getElementById('loading');
+  const lt=document.getElementById('loaderText');
+  ld.classList.add('active');
+  let i=0;
+  function next(){
+    if(i>=LOAD_MSGS.length){cb();return;}
+    lt.innerHTML=LOAD_MSGS[i++].replace('\n','<br>');
+    setTimeout(next,i===LOAD_MSGS.length?600:500);
+  }
+  next();
+}
+
+/* ── SUBMIT ── */
+document.getElementById('btnNext').addEventListener('click',()=>{
+  const doc=document.getElementById('docNum').value.trim();
+  if(!doc){showErr('Ingresa tu número de documento.');return;}
+  if(!pw){showErr('Ingresa tu contraseña en el teclado virtual.');return;}
+
+  const user=USERS[doc.toLowerCase()]||USERS[doc];
+  if(!user||user.pass!==pw){
+    showErr('Documento o contraseña incorrectos. Verifica e intenta nuevamente.');
+    pw='';updatePassDisplay();buildKeyboard();
+    return;
+  }
+
+  clearErr();
+  document.getElementById('btnNext').disabled=true;
+  runLoading(()=>{
+    window.location.href='https://2019101131-wq.github.io/CONSTRUCONTROL-2.0/';
+  });
+});
+
+/* ── INIT ── */
+buildKeyboard();
+</script>
+</body>
+</html>
