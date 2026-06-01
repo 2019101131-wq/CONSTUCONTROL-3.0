@@ -1,2 +1,2 @@
 # CONSTUCONTROL-3.0
-Sistema de Control de Acondicionado de trigo
+Sistema de Sistema Industrial de Control de Costos de Obras
